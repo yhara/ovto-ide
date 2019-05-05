@@ -41,37 +41,40 @@ module Ovto
     end
 
     module Actions
-      def ovto_window_mousemove(event:)
-        window = state.ovto_window.windows.find{|w| w.id == state.ovto_window.operating_window_id}
-        case state.ovto_window.ongoing_operation
-        when :drag
-          actions.ovto_window_drag(x: event.pageX, y: event.pageY, window: window)
-        when :resize
-          actions.ovto_window_resize(x: event.pageX, y: event.pageY, window: window)
+      module ControlBase
+        def ovto_window_mousemove(event:)
+          window = state.ovto_window.windows.find{|w| w.id == state.ovto_window.operating_window_id}
+          case state.ovto_window.ongoing_operation
+          when :drag
+            actions.ovto_window_drag(x: event.pageX, y: event.pageY, window: window)
+          when :resize
+            actions.ovto_window_resize(x: event.pageX, y: event.pageY, window: window)
+          end
+        end
+
+        def ovto_window_mouseup(event:)
+          window = state.ovto_window.windows.find{|w| w.id == state.ovto_window.operating_window_id}
+          case state.ovto_window.ongoing_operation
+          when :drag
+            actions.ovto_window_drag_end(window: window)
+          when :resize
+            actions.ovto_window_resize_end(window: window)
+          end
+        end
+
+        def ovto_window_operation_start(window:, op:)
+          return {ovto_window: state.ovto_window.merge(
+            ongoing_operation: op, operating_window_id: window.id
+          )}
+        end
+
+        def ovto_window_operation_end
+          return {ovto_window: state.ovto_window.merge(
+            ongoing_operation: nil, operating_window_id: nil
+          )}
         end
       end
-
-      def ovto_window_mouseup(event:)
-        window = state.ovto_window.windows.find{|w| w.id == state.ovto_window.operating_window_id}
-        case state.ovto_window.ongoing_operation
-        when :drag
-          actions.ovto_window_drag_end(window: window)
-        when :resize
-          actions.ovto_window_resize_end(window: window)
-        end
-      end
-
-      def ovto_window_operation_start(window:, op:)
-        return {ovto_window: state.ovto_window.merge(
-          ongoing_operation: op, operating_window_id: window.id
-        )}
-      end
-
-      def ovto_window_operation_end
-        return {ovto_window: state.ovto_window.merge(
-          ongoing_operation: nil, operating_window_id: nil
-        )}
-      end
+      include ControlBase
 
       module Dragging
         def ovto_window_drag_start(window:, event:)
