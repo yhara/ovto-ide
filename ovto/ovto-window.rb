@@ -27,9 +27,7 @@ module Ovto
     end
 
     class State < Ovto::State
-      item :windows, default: [
-        Ovto::Window::WindowState.new(id: 0, top: 200)
-      ]
+      item :windows, default: []
       item :ongoing_operation, default: nil  # :drag or :resize
       item :operating_window_id, default: nil
 
@@ -41,6 +39,13 @@ module Ovto
     end
 
     module Actions
+      def ovto_window_new(state:, **args)
+        window = Ovto::Window::WindowState.new(**args)
+        return {ovto_window: state.ovto_window.merge(
+          windows: state.ovto_window.windows + [window]
+        )}
+      end
+
       module ControlBase
         def ovto_window_mousemove(event:)
           window = state.ovto_window.windows.find{|w| w.id == state.ovto_window.operating_window_id}

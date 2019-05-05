@@ -7,6 +7,9 @@ module Ovto
     end
 
     module Actions
+      def ovto_ide_open_repl
+        actions.ovto_window_new(id: :ovto_ide_repl, top: 200)
+      end
     end
 
     class MainComponent < Ovto::Component
