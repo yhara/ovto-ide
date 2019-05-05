@@ -6,6 +6,17 @@ require 'ovto-ide'
 class TodoApp < Ovto::App
   FILTERS = [:All, :Active, :Completed]
 
+  def setup
+    %x{
+      document.addEventListener("mousemove", function(e){
+        #{actions.ovto_window_mousemove(event: Native(`e`))}
+      });
+      document.addEventListener("mouseup", function(e){
+        #{actions.ovto_window_mouseup(event: Native(`e`))}
+      });
+    }
+  end
+
   class Todo < Ovto::State
     item :id
     item :value
