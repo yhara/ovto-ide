@@ -132,19 +132,9 @@ module Ovto
       include Resizing
     end
 
-    class MainComponent < Ovto::Component
-      def render
-        o ".OvtoWindowMainComponent" do
-          state.ovto_window.windows.each do |w|
-            next if w.hidden
-            o OvtoWindow, window: w, content: "hello"
-          end
-        end
-      end
-    end
-
     class OvtoWindow < Ovto::Component
-      def render(window:, content:)
+      def render(window_id:, &block)
+        window = state.ovto_window.windows.find{|w| w.id == window_id}
         o ".OvtoWindow", {
           style: {
             position: :fixed,
@@ -160,8 +150,10 @@ module Ovto
           }
         } do
           o TopBar, window: window
-          o "div", {style: {"flex-grow": 1}}, content
-          o ResizeHandleBar, window: window
+          o "div", {style: {"flex-grow": 1, display: :flex}} do
+            o "div", {style: {"flex-grow": 1}}, &block
+            o ResizeHandleBar, window: window
+          end
         end
       end
 
@@ -184,9 +176,8 @@ module Ovto
         def render(window:)
           o ".ResizeHandleBar", {
             style: {
-              height: "20px",
-              width: "100%",
               display: :flex,
+              "flex-direction": :column,
             },
           } do
             o "span", {style: {"flex-grow": 1}}

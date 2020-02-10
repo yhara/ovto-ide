@@ -206,7 +206,6 @@ class TodoApp < Ovto::App
 
         o StateInspector
         o Ovto::Ide::MainComponent
-        o Ovto::Window::MainComponent
       end
     end
   end
