@@ -18,7 +18,7 @@ class TodoApp < Ovto::App
         #{actions.ovto_window.mouseup(event: Native(`e`))}
       });
     }
-    actions.ovto_ide.ovto_ide_open_repl()
+    actions.ovto_ide.open_repl()
   end
 
   class Todo < Ovto::State

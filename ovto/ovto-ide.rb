@@ -10,25 +10,25 @@ module Ovto
     end
 
     class Actions < Ovto::Ide::Actions
-      def ovto_ide_open_repl
+      def open_repl
         actions.ovto_window.new_window(id: :ovto_ide_repl, top: 200)
       end
 
-      def ovto_ide_repl_input(str:)
+      def repl_input(str:)
         return {repl_input: str}
       end
 
-      def ovto_ide_repl_clear_input
+      def repl_clear_input
         return {repl_input: ""}
       end
 
-      def ovto_ide_repl_eval
+      def repl_eval
         input = state.repl_input
         console.log("input", input)
         new_content = state.repl_content + "\n" +
           input + " ->\n" +
           eval(input).inspect + "\n"
-        actions.ovto_ide_repl_clear_input()
+        actions.repl_clear_input()
         return {repl_content: new_content}
       end
     end
@@ -65,8 +65,8 @@ module Ovto
               style: {width: "100%"},
               type: :text,
               value: state.repl_input,
-              oninput: ->(e){ actions.ovto_ide_repl_input(str: e.target.value); e.preventDefault() },
-              onkeydown: ->(e){ actions.ovto_ide_repl_eval() if e.key == "Enter"  }
+              oninput: ->(e){ actions.repl_input(str: e.target.value); e.preventDefault() },
+              onkeydown: ->(e){ actions.repl_eval() if e.key == "Enter"  }
             }
           end
         end
