@@ -11,7 +11,7 @@ module Ovto
 
     module Actions
       def ovto_ide_open_repl
-        actions.ovto_window.ovto_window_new(id: :ovto_ide_repl, top: 200)
+        actions.ovto_window.new_window(id: :ovto_ide_repl, top: 200)
       end
 
       def ovto_ide_repl_input(str:)

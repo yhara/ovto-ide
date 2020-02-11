@@ -11,10 +11,10 @@ class TodoApp < Ovto::App
   def setup
     %x{
       document.addEventListener("mousemove", function(e){
-        #{actions.ovto_window.ovto_window_mousemove(event: Native(`e`))}
+        #{actions.ovto_window.mousemove(event: Native(`e`))}
       });
       document.addEventListener("mouseup", function(e){
-        #{actions.ovto_window.ovto_window_mouseup(event: Native(`e`))}
+        #{actions.ovto_window.mouseup(event: Native(`e`))}
       });
     }
     actions.ovto_ide_open_repl()

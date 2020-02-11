@@ -39,59 +39,59 @@ module Ovto
     end
 
     class Actions < Ovto::Window::Actions
-      def ovto_window_new(state:, **args)
+      def new_window(state:, **args)
         window = Ovto::Window::WindowState.new(**args)
         return {windows: state.windows + [window]}
       end
 
       module ControlBase
-        def ovto_window_mousemove(event:)
+        def mousemove(event:)
           window = state.windows.find{|w| w.id == state.operating_window_id}
           case state.ongoing_operation
           when :drag
-            actions.ovto_window_drag(x: event.pageX, y: event.pageY, window: window)
+            actions.drag(x: event.pageX, y: event.pageY, window: window)
           when :resize
-            actions.ovto_window_resize(x: event.pageX, y: event.pageY, window: window)
+            actions.resize(x: event.pageX, y: event.pageY, window: window)
           end
         end
 
-        def ovto_window_mouseup(event:)
+        def mouseup(event:)
           window = state.windows.find{|w| w.id == state.operating_window_id}
           case state.ongoing_operation
           when :drag
-            actions.ovto_window_drag_end(window: window)
+            actions.drag_end(window: window)
           when :resize
-            actions.ovto_window_resize_end(window: window)
+            actions.resize_end(window: window)
           end
         end
 
-        def ovto_window_operation_start(window:, op:)
+        def operation_start(window:, op:)
           return {ongoing_operation: op, operating_window_id: window.id}
         end
 
-        def ovto_window_operation_end
+        def operation_end
           return {ongoing_operation: nil, operating_window_id: nil}
         end
       end
       include ControlBase
 
       module Dragging
-        def ovto_window_drag_start(window:, event:)
-          actions.ovto_window_operation_start(window: window, op: :drag)
+        def drag_start(window:, event:)
+          actions.operation_start(window: window, op: :drag)
           return state.update_window(
             window.merge(drag_offset: [event.offsetX, event.offsetY])
           )
         end
 
-        def ovto_window_drag(window:, x:, y:)
+        def drag(window:, x:, y:)
           u, v = *window.drag_offset
           return state.update_window(
             window.merge(left: x-u, top: y-v)
           )
         end
 
-        def ovto_window_drag_end(window:)
-          actions.ovto_window_operation_end()
+        def drag_end(window:)
+          actions.operation_end()
           return state.update_window(
             window.merge(drag_offset: nil)
           )
@@ -100,8 +100,8 @@ module Ovto
       include Dragging
 
       module Resizing
-        def ovto_window_resize_start(window:, event:)
-          actions.ovto_window_operation_start(window: window, op: :resize)
+        def resize_start(window:, event:)
+          actions.operation_start(window: window, op: :resize)
           return state.update_window(
             window.merge(resize_base: [
               window.width, window.height, event.pageX, event.pageY
@@ -109,15 +109,15 @@ module Ovto
           )
         end
 
-        def ovto_window_resize(window:, x:, y:)
+        def resize(window:, x:, y:)
           w0, h0, u, v = *window.resize_base
           return state.update_window(
             window.merge(width: w0 + x-u, height: h0 + y-v)
           )
         end
 
-        def ovto_window_resize_end(window:)
-          actions.ovto_window_operation_end()
+        def resize_end(window:)
+          actions.operation_end()
           return state.update_window(
             window.merge(resize_base: nil)
           )
@@ -159,7 +159,7 @@ module Ovto
               width: "100%",
               "border-bottom": "1px solid black",
             },
-            onmousedown: ->(e){ actions.ovto_window_drag_start(window: window, event: e); e.preventDefault() },
+            onmousedown: ->(e){ actions.drag_start(window: window, event: e); e.preventDefault() },
           } do
             o "span", "x"
           end
@@ -182,7 +182,7 @@ module Ovto
         class ResizeHandle < Ovto::Window::Component
           def render(window:)
             o ".ResizeHandle", {
-              onmousedown: ->(e){ actions.ovto_window_resize_start(window: window, event: e); e.preventDefault(); e.stopPropagation() },
+              onmousedown: ->(e){ actions.resize_start(window: window, event: e); e.preventDefault(); e.stopPropagation() },
             }, "/"
           end
         end
