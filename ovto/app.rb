@@ -6,6 +6,7 @@ require 'ovto-ide'
 class TodoApp < Ovto::App
   FILTERS = [:All, :Active, :Completed]
 
+  use Ovto::Ide
   use Ovto::Window
 
   def setup
@@ -17,7 +18,7 @@ class TodoApp < Ovto::App
         #{actions.ovto_window.mouseup(event: Native(`e`))}
       });
     }
-    actions.ovto_ide_open_repl()
+    actions.ovto_ide.ovto_ide_open_repl()
   end
 
   class Todo < Ovto::State
@@ -40,13 +41,9 @@ class TodoApp < Ovto::App
     item :todos, default: []
     item :filter, default: FILTERS.first
     item :input, default: ""
-
-    item :ovto_ide, default: Ovto::Ide::State.new
   end
 
   class Actions < Ovto::Actions
-    include Ovto::Ide::Actions
-
     def add_todo
       new_todo = Todo.new(
         id: state.todos.length + 1,
