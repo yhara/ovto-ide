@@ -6,13 +6,15 @@ require 'ovto-ide'
 class TodoApp < Ovto::App
   FILTERS = [:All, :Active, :Completed]
 
+  use Ovto::Window
+
   def setup
     %x{
       document.addEventListener("mousemove", function(e){
-        #{actions.ovto_window_mousemove(event: Native(`e`))}
+        #{actions.ovto_window.ovto_window_mousemove(event: Native(`e`))}
       });
       document.addEventListener("mouseup", function(e){
-        #{actions.ovto_window_mouseup(event: Native(`e`))}
+        #{actions.ovto_window.ovto_window_mouseup(event: Native(`e`))}
       });
     }
     actions.ovto_ide_open_repl()
@@ -40,12 +42,10 @@ class TodoApp < Ovto::App
     item :input, default: ""
 
     item :ovto_ide, default: Ovto::Ide::State.new
-    item :ovto_window, default: Ovto::Window::State.new
   end
 
   class Actions < Ovto::Actions
     include Ovto::Ide::Actions
-    include Ovto::Window::Actions
 
     def add_todo
       new_todo = Todo.new(
