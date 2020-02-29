@@ -4,6 +4,12 @@ require 'ovto-window'
 
 module Ovto
   class Ide < Ovto::Middleware("ovto_ide")
+    use Ovto::Window
+
+    def setup
+      actions.open_repl()
+    end
+
     class State < Ovto::Ide::State
       item :repl_content, default: "1\n2\n3\n4\n5\n"
       item :repl_input, default: ""

@@ -2,6 +2,17 @@ require 'ovto'
 
 module Ovto
   class Window < Ovto::Middleware("ovto_window")
+    def setup
+      %x{
+        document.addEventListener("mousemove", function(e){
+          #{actions.mousemove(event: Native(`e`))}
+        });
+        document.addEventListener("mouseup", function(e){
+          #{actions.mouseup(event: Native(`e`))}
+        });
+      }
+    end
+
     class WindowState < Ovto::State
       item :id
       item :hidden, default: false
