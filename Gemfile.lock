@@ -23,7 +23,7 @@ GEM
       thor (~> 0.20)
     parser (2.6.4.1)
       ast (~> 2.4.0)
-    rack (2.2.2)
+    rack (2.2.3)
     rack-protection (2.0.8.1)
       rack
     rake (13.0.1)
